@@ -1,0 +1,10 @@
+poskd
+dd 11
+  dsak kk
+
+
+
+pos:30
+value:40
+pos:60
+value:70

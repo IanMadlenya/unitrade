@@ -1,0 +1,47 @@
+cc = g++
+CCFLAGS = -std=c++11 -g 
+INC = -I./ -I./library/
+INCCTP = -I./externFUT/ctp/include -I./externFUT/ctp 
+
+LIBDIR=-L.  -L./library
+LIBDIRCTP = -L./externFUT/ctp/lib/ -L./externFUT/ctp
+
+LIBSMAIN =  -ltrade 
+LIBS = -lbin -lm -ldl -lpthread
+LIBSCTP = -Wl,-rpath=./externFUT/ctp/lib
+
+all:  trade
+HEAD = global.h ComHeader.h StkHeader.h StkCompute.h StkExecute.h
+SRC =  risk.cpp readdbf.cpp common.cpp stk.cpp fut.cpp global.cpp util.cpp StkThread.cpp FutThread.cpp StkCompute.cpp StkExecute.cpp FutCompute.cpp FutExecute.cpp
+
+CTPHEAD = externFUT/ctp/MdSpi.h   externFUT/ctp/TraderSpi.h
+CTPSRC = externFUT/ctp/MdSpi.cpp  externFUT/ctp/TraderSpi.cpp
+ 
+
+LIB1 = libtrade.a
+LIBCTP = libctp.a
+OBJ = $(SRC:.cpp=.o)
+OBJCTP = $(CTPSRC:.cpp=.o)
+
+
+.cpp.o: $(HEAD)
+	$(cc)  $(INC) $(INCCTP) $(CCFLAGS) -c $< -o $@
+
+$(LIBCTP): $(OBJCTP) $(CTPHEAD) $(CTPSRC)
+	ar -r -c -s $(LIBCTP) $(OBJCTP)
+
+
+libtrade.a: $(OBJ) $(HEAD)
+	ar -r -c -s $(LIB1) $(OBJ)
+
+trade.o: main.cpp $(HEAD)
+	$(cc) $(INC) $(INCCTP)  $(CCFLAGS) -o trade.o -c main.cpp
+
+trade:  $(LIB1) $(LIBCTP) trade.o
+	$(cc) $(INC) $(CCFLAGS) trade.o $(LIBDIR) $(LIBDIRCTP) $(LIBSMAIN) $(LIBCTP) $(LIBS) $(LIBSCTP)  -o trade
+clean:
+	rm -f *.o
+	rm -f *~
+	rm -f trade
+	rm -f *.a
+	rm -f externFUT/ctp/*.o

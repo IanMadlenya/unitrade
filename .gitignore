@@ -1,0 +1,19 @@
+security/openssl-1.0.1i/
+timeseries/hdf5
+control/fanbin.crt
+control/key.private
+control/key.public
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
