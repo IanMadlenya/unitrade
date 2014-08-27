@@ -38,6 +38,7 @@ enum ThreadID {
   StkExecute
 };
 
+enum SecurityType { STOCK, INDEX, FUTURES, ETF, BOND, SWAP, REPO, OPTION};
 
 enum EventType {
   FuturesT, 
@@ -46,7 +47,8 @@ enum EventType {
   StockT,
   IndexT,
   ETFT,
-  BondT
+  BondT,
+  RepoT
 };
 
 
@@ -134,12 +136,23 @@ class Para {
 
   std::string dbcn;
 
+  std::string key_directory;
   std::string server_key_private;
   std::string server_key_public;
   std::string server_certificate;
   std::string client_key_public;
 
   int parse();
+};
+
+
+/* security is root trading securities*/
+class security {
+  public:
+    std::string _name;
+    std::string _code;
+    SecurityType security_type;
+
 };
 
 
@@ -172,7 +185,8 @@ class Event : public Task {
   std::string des_status;
   std::string description;
   std::vector<std::shared_ptr<Event>> sub_events;
-  bool is_leaf{false};
+  bool is_leaf {false};
+  bool is_threaded {false}; /*when work is in huge amount, needs to be threaded */
   std::shared_ptr<Event> next_event; /*should be defaultly constructed as
                                         nullptr*/
   Event* next_parent{nullptr};

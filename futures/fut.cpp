@@ -417,7 +417,7 @@ int FuturesBook::ReadLocal(class Para &para){
         }
         for (unsigned int i=0; i<InstrumentList.size(); i++){
             //cout<<price<<endl;
-            if (vs[0] == InstrumentList[i]->name)
+            if (vs[0] == InstrumentList[i]->_code)
             {
                 InstrumentList[i]->Pos = atoi(vs[1].c_str());
                 InstrumentList[i]->AV = atof(vs[10].c_str());
@@ -448,7 +448,7 @@ int FuturesBook::ReadLocal(class Para &para){
     cerr<<"--->>> According to record, we hold contracts:"<<endl;
     cerr<<"     "<<"Instrument\t\tSettlement\tAmount"<<endl;
     for (unsigned int i=0; i<InstrumentList.size(); i++){
-        cerr<<"--->>> "<<InstrumentList[i]->name<<"\t\t"
+        cerr<<"--->>> "<<InstrumentList[i]->_code<<"\t\t"
         <<InstrumentList[i]->PreSettlementPrice<<"\t\t"
         <<InstrumentList[i]->Pre_Pos<<endl;
     }

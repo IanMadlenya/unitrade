@@ -168,13 +168,13 @@ void TWAPFuturesComputeEngine::execute()
                     offset="open";
                 if (offset=="close" && abs(cur_pos)<amount )
                 {
-                    order1 = make_shared<FuturesOrder>(futures_book.InstrumentList[0]->name,
+                    order1 = make_shared<FuturesOrder>(futures_book.InstrumentList[0]->_code,
                                             "market",
                                             offset,
                                             dir,
                                             abs(cur_pos),
                                             price);
-                    order3 = make_shared<FuturesOrder>(futures_book.InstrumentList[0]->name,
+                    order3 = make_shared<FuturesOrder>(futures_book.InstrumentList[0]->_code,
                                             "market",
                                             "open",
                                             dir,
@@ -189,7 +189,7 @@ void TWAPFuturesComputeEngine::execute()
                 }
                 else
                 {
-                    order1 = make_shared<FuturesOrder>(futures_book.InstrumentList[0]->name,
+                    order1 = make_shared<FuturesOrder>(futures_book.InstrumentList[0]->_code,
                                             "market",
                                             offset,
                                             dir,
@@ -231,13 +231,13 @@ void TWAPFuturesComputeEngine::execute()
                     offset="open";
                 if (offset=="close" && abs(next_pos)<amount )
                 {
-                    order2 = make_shared<FuturesOrder>(futures_book.InstrumentList[1]->name,
+                    order2 = make_shared<FuturesOrder>(futures_book.InstrumentList[1]->_code,
                                             "market",
                                             offset,
                                             dir,
                                             abs(next_pos),
                                             price);
-                    order4 = make_shared<FuturesOrder>(futures_book.InstrumentList[1]->name,
+                    order4 = make_shared<FuturesOrder>(futures_book.InstrumentList[1]->_code,
                                             "market",
                                             offset,
                                             dir,
@@ -252,7 +252,7 @@ void TWAPFuturesComputeEngine::execute()
                 }
                 else
                 {
-                    order2 = make_shared<FuturesOrder>(futures_book.InstrumentList[1]->name,
+                    order2 = make_shared<FuturesOrder>(futures_book.InstrumentList[1]->_code,
                                             "market",
                                             offset,
                                             dir,
@@ -292,13 +292,13 @@ void TWAPFuturesComputeEngine::execute()
                     offset="open";
                 if (offset=="close" && abs(nn_pos)<amount )
                 {
-                    order5 = make_shared<FuturesOrder>(futures_book.InstrumentList[2]->name,
+                    order5 = make_shared<FuturesOrder>(futures_book.InstrumentList[2]->_code,
                                             "limit",
                                             offset,
                                             dir,
                                             abs(nn_pos),
                                             price);
-                    order6 = make_shared<FuturesOrder>(futures_book.InstrumentList[2]->name,
+                    order6 = make_shared<FuturesOrder>(futures_book.InstrumentList[2]->_code,
                                             "limit",
                                             offset,
                                             dir,
@@ -313,7 +313,7 @@ void TWAPFuturesComputeEngine::execute()
                 }
                 else
                 {
-                    order5 = make_shared<FuturesOrder>(futures_book.InstrumentList[2]->name,
+                    order5 = make_shared<FuturesOrder>(futures_book.InstrumentList[2]->_code,
                                             "limit",
                                             offset,
                                             dir,

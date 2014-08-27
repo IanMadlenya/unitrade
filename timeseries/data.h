@@ -17,7 +17,7 @@
 #include <sstream>
 #include <algorithm>
 #include <cstring>
-#include "ComHeader.h"
+#include "TSHeader.h"
 
 
 namespace stsdb {

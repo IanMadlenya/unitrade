@@ -59,7 +59,7 @@ class StockConfigPara {
 };
 
 
-class Stock {
+class Stock : public security {
  public:
   std::string name;  // stock name
   std::string code;  // stock code

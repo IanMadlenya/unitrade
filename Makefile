@@ -11,7 +11,7 @@ else
 endif
 
 
-INC = -I. -Ilibrary/ -Istock -Ifutures 
+INC = -I. -Ilibrary/ -Istock -Ifutures -Ioption 
 INCCTP = -IexternFUT/ctp/include -IexternFUT/ctp 
 INCDBF = -IexternSTK/quote/dbf/ -IexternSTK/quote/
 INCTS = -Itimeseries/stsdb 

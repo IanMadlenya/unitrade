@@ -160,7 +160,9 @@ class FuturesConfigPara {
   }
 };
 
-class Futures {
+
+
+class Futures : public security {
  public:
   double bid1, bid2, bid3, bid4, bid5;
   double ask1, ask2, ask3, ask4, ask5;
@@ -195,7 +197,7 @@ class Futures {
   double UnrealizedPL;
   double TotalPL;
   bool isSettleDay;
-  std::string name;
+
   int hour, min, sec, milisec;  // last change time;
   int st_hour, st_min, st_sec,
       st_millisec;  // time associate with estimate settlemnt price
@@ -269,8 +271,8 @@ class Futures {
     return t + "  " + "  " + p + "  " + bid + "  " + ask + "  " + bid_v + "  " +
            ask_v;
   }
-  Futures(std::string _name) {
-    name = _name;
+  Futures(std::string code) {
+    _code = code;
     Pos = 0;
     Volume = PreVolume = VolumeChange = 0;
     check_pos = Pre_Pos = 0;
@@ -337,7 +339,7 @@ class FuturesBook {
   std::map<std::string, std::shared_ptr<Futures>> instruments;
   void add(std::shared_ptr<Futures> pIns) {
     num++;
-    instruments[pIns->name] = pIns;
+    instruments[pIns->_code] = pIns;
     InstrumentList.push_back(pIns);
   }
   // class instrument** InstrumentList;
@@ -389,7 +391,7 @@ class FuturesBook {
        << std::setw(10) << "AVCost" << std::setw(11) << "Fee" << std::setw(11)
        << "TotalFee" << std::endl;
     for (int i = 0; i < num; i++) {
-      WH << std::setw(7) << InstrumentList[i]->name << std::setw(8)
+      WH << std::setw(7) << InstrumentList[i]->_code << std::setw(8)
          << InstrumentList[i]->Pos << std::setw(9) << InstrumentList[i]->Pre_Pos
          << std::setw(10) << InstrumentList[i]->LastPrice << std::setw(10)
          << InstrumentList[i]->EstimateSettlementPrice << std::setw(10)
@@ -431,10 +433,10 @@ class FuturesBook {
     std::string icon;
     icon = (para->TailBit == 100 ? "(L)" : "   ");
     using namespace std;
-    OF << setw(12) << "Instrument:" << setw(13) << InstrumentList[0]->name
+    OF << setw(12) << "Instrument:" << setw(13) << InstrumentList[0]->_code
        << (para->TailBit == 0 ? "(T)" : icon) << setw(19)
-       << InstrumentList[1]->name << (para->TailBit == 1 ? "(T)" : icon)
-       << setw(19) << InstrumentList[2]->name
+       << InstrumentList[1]->_code << (para->TailBit == 1 ? "(T)" : icon)
+       << setw(19) << InstrumentList[2]->_code
        << (para->TailBit == 2 ? "(T)" : icon) << endl;
     OF << setw(12) << "--------------------------------------------------------"
                       "--------------------" << endl;
@@ -575,10 +577,10 @@ class FuturesOrder {
     isActive = 0;
     Status = 5;
   }  // initialize Empty Order
-  FuturesOrder(std::string name, std::string mode, std::string offset,
+  FuturesOrder(std::string code, std::string mode, std::string offset,
                std::string dir, int amount, double limitprice = 0) {
     TimeFlag = false;
-    InstrumentName = name;
+    InstrumentName = code;
     OrderMode = mode;
     Offset = offset;
     Direction = dir;
@@ -592,7 +594,7 @@ class FuturesOrder {
 
   int updatePrice(class FuturesBook &onhand, int t) {
     for (unsigned int i = 0; i < onhand.InstrumentList.size(); i++) {
-      if (onhand.InstrumentList[i]->name == InstrumentName) {
+      if (onhand.InstrumentList[i]->_code == InstrumentName) {
         if (Direction == "sell")
           LimitPrice = onhand.InstrumentList[i]->bid1 - 0.2 * t;
         else if (Direction == "buy")

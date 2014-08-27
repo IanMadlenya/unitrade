@@ -1,5 +1,5 @@
 //
-//  ComHeader.h
+//  TSHeader.h
 //  stsdb
 //
 //  Created by Bin Fan on 8/4/14.
@@ -17,6 +17,7 @@
 #include <sstream>
 #include <algorithm>
 #include <cstring>
+//#include "ComHeader.h"
 
 namespace stsdb {
 
@@ -65,8 +66,8 @@ timestamp_t parseTimeToStamp(std::string timestring, std::string format);
 std::istream& operator>>(std::istream& str, CSVRow& data);
 
 //******************************enums**************************
-enum SecurityType { STOCK, INDEX, FUTURES, ETF, BOND, SWAP, REPO };
 enum DataType { DAILY, HF };
+enum SecurityType { STOCK, INDEX, FUTURES, ETF, BOND, SWAP, REPO,OPTION};
 //*************************************************************
 
 //************** expception class***********************

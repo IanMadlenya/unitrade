@@ -22,14 +22,14 @@ endif
 
 
 
-INC = -I. -I../ -I../hdf5/include -I../../library
+INC = -I. -I../ -I../../ -I../hdf5/include -I../../library
 LIBDIR=-L. -L../hdf5/lib -L../../library
 LINK = -lhdf5 -lhdf5_hl -ltbb $(dylinker) 
 LINKSTSDB = -lbin -lstsdb
 
 .PHONY: clean tags
 all:  tag $(LIBSTSDB) import output
-HEAD = ../ComHeader.h HDFengine.h ../timeseries.h
+HEAD = ../TSHeader.h HDFengine.h ../timeseries.h
 SRC =  HDFengine.cpp
 MAINSRC = import.cpp
 EXAMSRC = output.cpp

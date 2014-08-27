@@ -9,7 +9,7 @@
 #ifndef stsdb_Traits_h
 #define stsdb_Traits_h
 
-#include "ComHeader.h"
+#include "TSHeader.h"
 #include "data.h"
 
 namespace stsdb {
