@@ -29,6 +29,7 @@ class CommandHistory {
       mark = first;
       return commands[mark];
     }
+    return "";
   }
   std::string GetLast() {
     if (mark == first && last == current)
