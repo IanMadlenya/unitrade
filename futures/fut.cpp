@@ -226,6 +226,7 @@ int FuturesConfigPara::parseParameter(ifstream& config){
 
 
 
+
 int FuturesConfigPara::SetETA(){
     Msg("core", "processing futures trading day info");
     std::vector<int> trading_day_list;

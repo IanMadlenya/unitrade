@@ -145,7 +145,6 @@ class Para {
   int parse();
 };
 
-
 /* security is root trading securities*/
 class security {
   public:

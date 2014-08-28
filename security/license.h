@@ -20,15 +20,16 @@ using namespace std;
 
 namespace binsec {
 
-class Meta {
+typedef struct Meta {
   public:
+    std::string nickname;
     std::string hostname;
     std::string ip;
     std::string user;
   Meta(){
     
   }
-};
+} Meta;
 
 
 class License {

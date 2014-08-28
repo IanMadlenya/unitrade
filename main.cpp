@@ -170,7 +170,7 @@ int main(int argc, char**  argv)
     t["fut_execute"] = std::thread(call_from_thread_fut_execute, "fut_execute");
     
     //usleep(1000);
-    //t["inquiry"] = std::thread(call_from_thread, "inquiry");
+    //t["server"] = std::thread(call_from_thread_server, "server");
     
     usleep(1000);
     t["monitor"] = std::thread(call_from_thread_monitor, "monitor");
@@ -180,7 +180,7 @@ int main(int argc, char**  argv)
     t["stk_quote"].join();
     t["stk_compute"].join();
     t["stk_execute"].join();
-    //t["inquiry"].join();
+    //t["server"].join();
     t["fut_quote"].join();
     t["fut_compute"].join();
     t["fut_execute"].join();

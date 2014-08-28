@@ -212,7 +212,7 @@ inline int SSLStream::stream_accept() {
   ssl = nullptr;
 
   cl = accept(fd, (struct sockaddr *)&addr, &len);
-  printf("--->>> Server: connection: %s:%d\n", inet_ntoa(addr.sin_addr),
+  printf("--->>> server: incoming connect: %s:%d\n", inet_ntoa(addr.sin_addr),
          ntohs(addr.sin_port));
   ssl = SSL_new(ctx);
   SSL_set_fd(ssl, cl); /* set socket to SSL state*/
@@ -221,7 +221,7 @@ inline int SSLStream::stream_accept() {
   if (status != -1) {
     ERR_print_errors_fp(stderr);
   }
-  if (!silent) cerr << "--->>> " << name << ": connection linked" << endl;
+  if (!silent) cerr << "--->>> " << name << ": connection established" << endl;
 
   return 0;
 };

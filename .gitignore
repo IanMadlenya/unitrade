@@ -3,6 +3,7 @@ timeseries/hdf5
 control/fanbin.crt
 control/key.private
 control/key.public
+strategy/QuantLib-1.4
 
 # Compiled Object files
 *.slo

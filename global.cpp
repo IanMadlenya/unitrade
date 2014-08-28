@@ -17,11 +17,12 @@ namespace unitrade
 {
 
 std::map<std::string, int> thread_status = {{"ALL",0}, {"fut_quote",0},{"fut_compute",0}
-    ,{"fut_execute",0},{"inquiry",0}, {"monitor",0}, {"stk_quote",0}, {"stk_compute",0}, {"stk_execute",0}};
+    ,{"fut_execute",0},{"server",0}, {"monitor",0}, {"stk_quote",0}, {"stk_compute",0}, {"stk_execute",0}};
 StockBook stock_book;
-
 FuturesBook futures_book;
+
 FuturesOrderBook futures_order;
+
 Condition condition;
 
 Para  para;
