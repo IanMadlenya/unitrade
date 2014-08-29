@@ -164,39 +164,41 @@ class FuturesConfigPara {
 
 class Futures : public security {
  public:
-  double bid1, bid2, bid3, bid4, bid5;
-  double ask1, ask2, ask3, ask4, ask5;
-  int bid1_vol, bid2_vol, bid3_vol, bid4_vol, bid5_vol;
-  int ask1_vol, ask2_vol, ask3_vol, ask4_vol, ask5_vol;
-  double LastPrice;  // last order price
-  double PreSettlementPrice, SettlementPrice, EstimateSettlementPrice;
-  double PreClosePrice;
-  double value, basevalue;
-  double OpenPrice;
-  double HighPrice, LowPrice, AveragePrice;
-  double PreOpenInterest, OpenInterest, OpenInterestChange;
-  int PreVolume, Volume, VolumeChange;
-  int EstimateVol;
-  double Fee, TodayFee;
-  double Turnover;
-  int Pre_Pos;  // how many long orders we hold yesterday
-  int check_pos;
-  int Pos;          // how many orders we hold yesterday
-  int Pos_Trading;  // how many orders are in trading process (could be
+  double bid1 {}, bid2 {}, bid3 {}, bid4 {}, bid5 {};
+  double ask1 {}, ask2 {}, ask3 {}, ask4 {}, ask5 {};
+  int bid1_vol {}, bid2_vol {}, bid3_vol {}, bid4_vol {}, bid5_vol {};
+  int ask1_vol {}, ask2_vol {}, ask3_vol {}, ask4_vol {}, ask5_vol {};
+  double LastPrice {};  // last order price
+  double PreSettlementPrice {}, SettlementPrice {}, EstimateSettlementPrice {};
+  double PreClosePrice {};
+  double value{}, basevalue{};
+  double OpenPrice{};
+  double HighPrice{}, LowPrice{}, AveragePrice{};
+  double PreOpenInterest{}, OpenInterest{}, OpenInterestChange{};
+  int PreVolume{}, Volume{}, VolumeChange{};
+  int EstimateVol{};
+  double Fee{}, TodayFee{};
+  double Turnover{};
+  int Pre_Pos {};  // how many long contracts we hold yesterday
+  int check_pos {};
+  int Pos {};          // how many contracts we hold yesterday
+  int Pos_Trading {};  // how many contracts are in trading process (could be
                     // negative)
-  int Pos_Traded;   // how many orders are traded (could be negative)
-  int Pre_Pos_Long;
-  int Pos_Long;
-  int ExpectPos;
-  double ExpectPosLong;
-  std::vector<int> InToday;  // in as positive, out as negative
-  std::vector<double> InTodayPrice;
-  double AV;
-  double PL;
-  double RealizedPL;
-  double UnrealizedPL;
-  double TotalPL;
-  bool isSettleDay;
+  int Pos_Traded {};   // how many contracts are traded (could be negative)
+  int Pre_Pos_Long {};
+  int Pos_Long {};
+  int ExpectPos {};
+  double ExpectPosLong {};
+  std::vector<int> InToday {};  // in as positive, out as negative
+  std::vector<double> InTodayPrice {};
+  double AV {};
+  double PL {};
+  double RealizedPL {};
+  double UnrealizedPL {};
+  double TotalPL {};
+  bool isSettleDay {};
+  bin::Timer stamp_time;
+  bin::Timer estimate_settle_time;
 
   int hour, min, sec, milisec;  // last change time;
   int st_hour, st_min, st_sec,
@@ -207,16 +209,18 @@ class Futures : public security {
     PL = RealizedPL + UnrealizedPL;
     return 0;
   }
+
   int updateSettlementPrice() {
-    double ratio;
+    double vol_ratio;
     if (st_hour != hour || st_min != min || st_sec != sec ||
-        st_millisec != milisec) {
+        st_millisec != milisec) 
+    {
       if (EstimateVol != 0)
-        ratio = 1.0 * OpenInterestChange / (OpenInterestChange + EstimateVol);
+        vol_ratio = 1.0 * OpenInterestChange / (OpenInterestChange + EstimateVol);
       else
-        ratio = 1;
+        vol_ratio = 1;
       EstimateSettlementPrice =
-          EstimateSettlementPrice * (1 - ratio) + LastPrice * ratio;
+          EstimateSettlementPrice * (1 - vol_ratio) + LastPrice * vol_ratio;
       EstimateVol = EstimateVol + OpenInterestChange;
       st_hour = hour;
       st_min = min;
@@ -273,30 +277,13 @@ class Futures : public security {
   }
   Futures(std::string code) {
     _code = code;
-    Pos = 0;
-    Volume = PreVolume = VolumeChange = 0;
-    check_pos = Pre_Pos = 0;
-    AV = 0;
-    PL = 0;
-    UnrealizedPL = 0;
-    RealizedPL = 0;
-    TotalPL = 0;
-    Pos_Long = 0;
-    isSettleDay = 0;
-    OpenInterest = 0;
-    PreSettlementPrice = 0;
-    EstimateVol = 0;
-    EstimateSettlementPrice = 2000;
-    SettlementPrice = 0;
-    Fee = 0;
-    TodayFee = 0;
-    Pos_Trading = 0;
-    Pos_Traded = 0;
-    ExpectPos = 0;
+
   }
 
  private:
 };
+
+
 
 class FuturesBook {
  public:
