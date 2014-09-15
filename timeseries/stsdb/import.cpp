@@ -23,6 +23,11 @@ using namespace stsdb;
 int main(int argc, const char* argv[]) {
   cout<<std::thread::hardware_concurrency()<<endl;
   std::ifstream file;
+  if (argc != 3)
+  {
+    std::cerr<<" Usage: ./import [path-to-data-list] [path-to-hdf]"<<std::endl;
+    return 1;
+  }
   file.open(argv[1]);
   if (!file.is_open()) {
     std::cerr << "cannot open file=" << argv[1] << std::endl;

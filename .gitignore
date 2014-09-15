@@ -4,6 +4,11 @@ control/fanbin.crt
 control/key.private
 control/key.public
 strategy/QuantLib-1.4
+timeseries/stsdb/gmon.out
+timeseries/stsdb/import
+timeseries/stsdb/output
+timeseries/stsdb/tags
+
 
 # Compiled Object files
 *.slo
