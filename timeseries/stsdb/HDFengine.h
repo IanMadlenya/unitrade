@@ -52,8 +52,11 @@ inline int readLongAttribution(const hid_t loc, const std::string att,
 
 //long QueryLastRecordFromHDF(std::string name, std::string grouppath);
 
+
+//------------- this is a function pointer that is to be transfered to H5Giterate
 template <typename T>
 herr_t create_read_file(hid_t loc_id, const char *code, void *opdata) {
+  //std::cout<<code<<std::endl;  // for test, see if we successfully read data
   long num_in_file;
   std::string name;
   std::string gics;
@@ -62,7 +65,7 @@ herr_t create_read_file(hid_t loc_id, const char *code, void *opdata) {
   H5Gget_objinfo(loc_id, code, false, &statbuf);
   auto _group = H5Gopen(loc_id, code, H5P_DEFAULT);
 
-  if (!readLongAttribution(_group, "num", num_in_file) &&
+  if (!readLongAttribution(_group, "nrow", num_in_file) &&
       !readStringAttribution(_group, "name", name) &&
       !readStringAttribution(_group, "gics", gics)) {
     auto ts = std::make_shared<Timeseries<T>>(
@@ -87,11 +90,12 @@ herr_t create_read_file(hid_t loc_id, const char *code, void *opdata) {
 
     return (int)status;
   } else {
-    std::cerr << "--->>> stsdb:read " << code << " attribution is broken"
+    std::cerr << "--->>> stsdb: H5TBread_table " << code << " attribution is broken"
               << std::endl;
     return -1;
   }
 };
+
 
 template <typename T>
 class HDFrecord {
@@ -102,7 +106,7 @@ class HDFrecord {
     _security_type = getSecurityType<T>();
     _data_type = getDataType<T>();
     ptr_des = T::getFeatures();
-
+    _type = stsdb::printSecurityType<T>();
     compress = true;
     chunk = 50;
     _file_name = file_name;
@@ -113,8 +117,17 @@ class HDFrecord {
     read_action = &(create_read_file<T>);
     H5Eset_auto(H5E_DEFAULT, NULL,
                 NULL);  // mute hdf error message, I will print it explicitly
-    if (_file < 0) return -1;  // file not opened
-    H5Giterate(_file, "/", NULL, read_action, ptr);
+    if (_file < 0) 
+      return -1;  // file not opened
+
+    _root_group = H5Gopen(_file, _type.c_str(), H5P_DEFAULT);
+    if (_root_group < 0)  // if something wrong, root group cannot be opened                              
+    {                                                                                                         
+      std::cerr<<"ERROR: data section(root group) cannot be opened, data="<<_type<<std::endl;                                            
+      H5Eprint(H5E_DEFAULT, stderr);                                                                          
+      return -2;      
+    }
+    H5Giterate(_file, _type.c_str(), NULL, read_action, ptr);
     return 0;
   }
 
@@ -132,17 +145,34 @@ class HDFrecord {
         return -1;
       }
     }
+    // open group to read/store data
+    std::string rgrp_path = "/"+_type;
+    auto status = H5Gget_objinfo(_file, rgrp_path.c_str(), 0, NULL);
+    if (status == 0)  // group exists, open it
+    {
+      _root_group = H5Gopen(_file, rgrp_path.c_str(), H5P_DEFAULT);
+    } else  // group not exist, create it
+    {
+      _root_group = H5Gcreate(_file, rgrp_path.c_str(), H5P_DEFAULT, H5P_DEFAULT,
+                         H5P_DEFAULT);
+    }
+    if (_root_group < 0)  // if something wrong, root group cannot be created
+    {
+      std::cerr<<"ERROR: root group cannot be created"<<std::endl;
+      H5Eprint(H5E_DEFAULT, stderr);
+      return -1;
+    }
     return 0;
   };
 
-  // this is used to write timeseries into database
 
+  // write timeseries into database
   int Write(TSPtr<T> pt, bool overwrite = false) {
     auto NRECORDS = pt->getNRecords();
     _code = pt->getCODE();
     _name = pt->getNAME();
     _dataset = pt->getDATASET();
-    _grppath = "/" + _code;
+    
     auto first_ts = pt->getFIRSTTS();
     auto last_ts = pt->getLASTTS();
     auto gics = pt->getGICS();
@@ -153,11 +183,11 @@ class HDFrecord {
                 NULL);  // mute hdf error message, I will print it explicitly
 
     // check if the group exist
-    auto status = H5Gget_objinfo(_file, _grppath.c_str(), 0, NULL);
+    auto status = H5Gget_objinfo(_root_group, _code.c_str(), 0, NULL);
     if (status == 0)  // group exists, open it
     {
-      _group = H5Gopen(_file, _code.c_str(), H5P_DEFAULT);
-      auto attr = H5Aopen(_group, "num", H5P_DEFAULT);
+      _group = H5Gopen(_root_group, _code.c_str(), H5P_DEFAULT);
+      auto attr = H5Aopen(_group, "nrow", H5P_DEFAULT);
       status = H5Aread(attr, H5T_NATIVE_LONG, &num_in_file);
       attr = H5Aopen(_group, "first", H5P_DEFAULT);
       status = H5Aread(attr, H5T_NATIVE_LONG, &first_in_file);
@@ -171,12 +201,13 @@ class HDFrecord {
       }
     } else  // group not exist, create it
     {
-      _group = H5Gcreate(_file, _grppath.c_str(), H5P_DEFAULT, H5P_DEFAULT,
+      _group = H5Gcreate(_root_group, _code.c_str(), H5P_DEFAULT, H5P_DEFAULT,
                          H5P_DEFAULT);
       first_in_file = first_ts;
     }
-    if (_group < 0)  // something wrong happens
+    if (_group < 0)  // if something wrong happens
     {
+      std::cerr<<"ERROR: data group cannot be created or read; code="<<_code<<std::endl;
       H5Eprint(H5E_DEFAULT, stderr);
       return -1;
     }
@@ -231,7 +262,7 @@ class HDFrecord {
     if (writeStringAttribution(_group, "gics", gics)) {
       throw TimeseriesException("HDF attribution write error");
     }
-    if (writeLongAttribution(_group, "num", num_in_file)) {
+    if (writeLongAttribution(_group, "nrow", num_in_file)) {
       throw TimeseriesException("HDF attribution write error");
     }
     if (writeLongAttribution(_group, "last", last_in_file)) {
@@ -259,7 +290,8 @@ class HDFrecord {
   std::string _name;
   std::string _dataset;
   std::string _grppath;
-  hid_t _group, _file;
+  std::string _type;
+  hid_t _root_group, _group, _file;
   std::string _file_name;
   bool compress;
   size_t chunk;

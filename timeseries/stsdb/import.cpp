@@ -89,7 +89,7 @@ int main(int argc, const char* argv[]) {
       data.reserve(max_size);
       io::CSVReader<8, io::trim_chars<' '>, io::no_quote_escape<','> > in(source);
       in.read_header(io::ignore_extra_column, "Date", "Open", "Close", "High",
-                     "Low", "Pre", "Volume", "Amount");
+                     "Low", "Pre", "Vol", "Amt");
       while (in.read_row(date, open, close, high, low, prev, vol, amt)) {
           data.emplace_back(StockDailyRecord{parseTimeToStamp(date, "%Y-%m-%d"),
                                            open, close, high, low, prev, vol,

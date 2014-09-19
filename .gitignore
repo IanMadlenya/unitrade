@@ -8,7 +8,7 @@ timeseries/stsdb/gmon.out
 timeseries/stsdb/import
 timeseries/stsdb/output
 timeseries/stsdb/tags
-
+*.h5
 
 # Compiled Object files
 *.slo

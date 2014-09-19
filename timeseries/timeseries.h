@@ -34,20 +34,30 @@ class Timeseries;
 template <typename T>
 using TSPtr = std::shared_ptr<Timeseries<T>>;  // <-- C++0x
 
-// factory to create timeseries instance
+template<typename T>
+std::string printSecurityType()
+{
+  SecurityType _security_type = getSecurityType<T>();
+  if (_security_type==SecurityType::STOCK)
+    return "stock";
+  else if (_security_type == SecurityType::FUTURES)
+    return "futures";
+  else if (_security_type == SecurityType::ETF)
+    return "ETF";
+}
+
 
 template <typename T>
 class Timeseries {
- public:
- 
-
+ public: 
   /* Constructors */
   Timeseries(  // type of security stock/index/futures/option
              std::string cd,   // security code, will be used as group name
              std::string nm,   // security name, will be used as group attribute
              std::string dn,   // dataset name, will be used as dataset name, like quote 
-             std::string gics) {
-
+             std::string gics="" // gics might be void (only meaningful in stocks)
+             ) 
+  {
     _code = cd; 
     _name = nm;
     _dataname = dn; 
@@ -59,16 +69,18 @@ class Timeseries {
   }
 
   
+
   // friend int SetTimeSeriesType(std::shared_ptr<Timeseries> series,
   // SecurityType type);
   // friend std::shared_ptr<Timeseries> TimeseriesFactory(std::string code,
   // std::string name, SecurityType type, std::string dataset, std::string file)
-
   Timeseries(std::string readsource, std::string cd) {
     _code = cd;
     _size = 0;
     data.reserve(chunk);
   };
+
+
 
   /* Methods to lookup records in the Timeseries */
   herr_t recordId_LE(timestamp_t timestamp, hsize_t* record_id);
@@ -150,12 +162,13 @@ class Timeseries {
   /* Private methods to deal with the Timeseries' index */
   bool createIndexIfNecessary(void);
   void indexTail(void);
-  /* Properties */
 
+  /* Properties */
   timestamp_t _first_ts {};
   timestamp_t _last_ts {};
  
 };
+
 }
 
 #endif
